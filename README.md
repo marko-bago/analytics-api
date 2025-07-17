@@ -1,0 +1,3 @@
+- `docker compose up --watch`
+- `docker compose down -v` (use -v to remove volumes)
+- `docker compose run app bin/bash`
