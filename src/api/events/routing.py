@@ -5,13 +5,12 @@ from .models import (
     EventCreateSchema,
     EventUpdateSchema
 )
-from api.db.config import DATABASE_URL
-from api.db.session import get_session
+from settings import settings
 from sqlmodel import Session, select
 
 router = APIRouter()
 
-@router.get("/", response_model=EventListSchema)
+""" @router.get("/", response_model=EventListSchema)
 def read_events(
     session : Session = Depends(get_session)):
 
@@ -22,7 +21,7 @@ def read_events(
 @router.post("/", response_model=EventModel)
 def create_event(
     payload:EventCreateSchema, 
-    session : Session = Depends(get_session)):
+    session : Session = Depends(get_connection)):
 
     data = payload.model_dump()
     obj = EventModel.model_validate(data)
@@ -41,4 +40,4 @@ def read_event(event_id : int) -> EventModel:
 def update_event(event_id : int, payload:EventUpdateSchema) -> EventModel:
 
     data = payload.model_dump()
-    return {"id":event_id, **data} 
+    return {"id":event_id, **data}  """

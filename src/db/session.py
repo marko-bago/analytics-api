@@ -1,8 +1,7 @@
 from contextlib import asynccontextmanager
 from typing import Optional
 from collections.abc import AsyncGenerator
-from ..settings import settings
-from sqlalchemy.ext.asyncio import AsyncSession
+from settings import settings
 from asyncpg import Pool, create_pool, Connection
 
 

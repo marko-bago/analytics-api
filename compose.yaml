@@ -26,13 +26,13 @@ services:
     environment:
       - POSTGRES_USER=ts_user
       - POSTGRES_PASSWORD=ts_pass
-      - POSTGRES_DB=timescaledb
+      - POSTGRES_DB=massive_data
     ports:
-      - "8003:5432"
+      - "5432:5432"
     volumes:
-      - timescaledb_data:/var/lib/postgresql/db
+      - timescaledb_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ts_user -d stocks"]
+      test: ["CMD-SHELL", "pg_isready -U ts_user -d massive_data"]
       interval: 5s
       retries: 10
   
@@ -45,8 +45,8 @@ services:
     env_file:
       - .env.compose
     depends_on:
-      - redis_service
-      - timescaledb
+      timescaledb:
+        condition: service_healthy
 
   redis_service:
     image: redis:7-alpine

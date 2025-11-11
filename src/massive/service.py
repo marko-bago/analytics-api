@@ -16,7 +16,7 @@ async def batch_store_massive_ticks(conn: Connection, msgs: List[WebSocketMessag
     async def _execute_batch(conn: Connection, batch: List[Tuple]) -> None:
 
         query = """
-        INSERT INTO ticks(symbol, timestamp_utc, timestamp_unix_ms, price, size, exchange)
+        INSERT INTO ticks(symbol, timestamp_utc, price, size, exchange)
         VALUES($1, $2, $3, $4, $5, $6)
         """
         await conn.executemany(query, batch)
@@ -26,16 +26,15 @@ async def batch_store_massive_ticks(conn: Connection, msgs: List[WebSocketMessag
     batch: List[Tuple[str, datetime, str, int, float, int, str]] = []
 
     for m in msgs:
-        ts_ms = m.data.get("t")
-        ts_s: str = m.data.get("t") / 1000 # get seconds
+
+        ts_ms: str = m.data.get("t")
         try:
-            ts: datetime = datetime.fromtimestamp(ts_s, tz=timezone.utc)
+            ts: datetime = datetime.fromtimestamp(ts_ms, tz=timezone.utc)
         except Exception:
             ts = datetime.now(timezone.utc)
         batch.append((
             m.symbol,
             ts,
-            ts_ms,
             float(m.data.get("p", 0)),
             int(m.data.get("s", 0)),   
             m.data.get("x")          
@@ -58,7 +57,6 @@ async def runner(symbols: List[str]) -> None:
     client: WebSocketClient = WebSocketClient(
         api_key=settings.massive_api_key,
         feed=Feed.Delayed,
-	    market=Market.Stocks,
         subscriptions=symbols
     )
 
